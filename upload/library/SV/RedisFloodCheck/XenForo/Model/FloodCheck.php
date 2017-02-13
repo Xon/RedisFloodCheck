@@ -4,6 +4,28 @@ class SV_RedisFloodCheck_XenForo_Model_FloodCheck extends XFCP_SV_RedisFloodChec
 {
     const LUA_SETTTL_SH1 = 'b670e66199af96236f9798dd1152e61c312d4f78';
 
+    protected function getSessionCache()
+    {
+        $session = null;
+        $cache = $this->_getCache(true);
+        if (XenForo_Application::isRegistered('session'))
+        {
+            $session = XenForo_Application::getSession();
+        }
+        else
+        {
+            $class = XenForo_Application::resolveDynamicClass('XenForo_Session');
+            /** @var $session XenForo_Session */
+            $session = new $class();
+        }
+        if ($session && is_callable(array($session, 'getSessionCache')))
+        {
+            $cache = $session->getSessionCache();
+        }
+
+        return $cache;
+    }
+
     public function checkFloodingInternal($action, $floodingLimit = null, $userId = null)
     {
         if ($userId === null)
@@ -26,8 +48,8 @@ class SV_RedisFloodCheck_XenForo_Model_FloodCheck extends XFCP_SV_RedisFloodChec
         }
 
         $registry = $this->_getDataRegistryModel();
-        $cache = $this->_getCache(true);
-        if (!method_exists($registry, 'getCredis') || !($credis = $registry->getCredis($cache)))
+        $cache = $this->getSessionCache();
+        if (!$cache || !method_exists($registry, 'getCredis') || !($credis = $registry->getCredis($cache)))
         {
             return parent::checkFloodingInternal($action, $floodingLimit, $userId);
         }
