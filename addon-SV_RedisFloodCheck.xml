@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<addon addon_id="SV_RedisFloodCheck" title="Redis backed flood checking" version_string="1.0.1" version_id="1000100" url="https://atelieraphelion.com/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
+<addon addon_id="SV_RedisFloodCheck" title="Redis backed Flood Checking" version_string="1.0.1" version_id="1000100" url="https://xenforo.com/community/resources/redis-flood-check.5463/" install_callback_class="" install_callback_method="" uninstall_callback_class="" uninstall_callback_method="">
   <admin_navigation/>
   <admin_permissions/>
   <admin_style_properties/>
