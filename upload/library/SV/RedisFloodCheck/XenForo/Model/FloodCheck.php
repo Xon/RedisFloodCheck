@@ -69,18 +69,21 @@ class SV_RedisFloodCheck_XenForo_Model_FloodCheck extends XFCP_SV_RedisFloodChec
                     "return 0 ";
                 $seconds = $credis->eval($script, array($key), array($floodingLimit));
             }
-            if ($seconds === 0)
-            {
-                return 0;
-            }
         }
         else
         {
             if (!$credis->set($key, '', array('nx', 'ex'=> $floodingLimit)))
             {
-                return 0;
+                $seconds = $credis->ttl($key);
             }
-            $seconds = $credis->ttl($key);
+            else
+            {
+                $seconds = 0;
+            }
+        }
+        if ($seconds <= 0)
+        {
+            return 0;
         }
         // seconds can return negative due to an error, treat that as requiring flooding
         return max(1, $seconds);
